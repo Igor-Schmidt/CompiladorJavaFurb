@@ -4,3 +4,6 @@
 - Foi ajustado questao de interfaco quanto a abrir um novo arquivo, salva-lo, e compila-lo, (problema que tivemos na entrega da interface)
 - Foi feito o esquema de traducao do semantico via, chatgpt e em sala ela corrigiu, falou que ta ok entao da de usar.
 - Precisamos corrgir o sintatico e fazer o semantico funcar, acredito que seja so fazer um switch do que vem e popular o arquivo .il
+
+
+obs. quando gerar os arquivos do gals tem que mudar algumas coisas sempre, nao esquecam, entao é sempre bom gerar em uma pasta separada e verificar as diferencas sabe.
