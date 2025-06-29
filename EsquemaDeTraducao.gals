@@ -1,0 +1,176 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+Package = compilador
+ScannerCaseSensitive = true
+ScannerTable = Compact
+Input = Stream
+Parser = LL
+#RegularDefinitions
+low: [a-z]
+up: [A-Z]
+dig: [0-9]
+let: min | mai
+
+#Tokens
+// Enzo Gabriel da Rocha, Guilherme Maba, Igor Zafriel Schmidt
+
+// ID Teste - V
+identificador: {low} ( {up}? ( {low} | {dig} | _{dig} )+ )* {up}?
+
+// const_int - V
+cte_int: {dig}+
+// const_float - V
+cte_float: {dig}+"."{dig}+
+// const_char - V
+cte_char: "\"[^\n]
+// const_string - V
+cte_string: \" ([^\n \\ % \"] | %x)* \"
+
+// coment_linha - V
+:!  "#" (.)*
+
+// coment_bloco - V
+:! "{" \n [^"{" "}"]* \n "}"
+
+// caracteres de formataÃ§Ã£o - V
+:! [\n \t \s]
+
+// palavras reservadas - V
+pr_bool = identificador : "bool"
+pr_case = identificador : "case"
+pr_char = identificador : "char"
+pr_echo = identificador : "echo"
+pr_do = identificador : "do"
+pr_end = identificador : "end"
+pr_false = identificador : "false"
+pr_float = identificador : "float"
+pr_int = identificador : "int"
+pr_local = identificador : "local"
+pr_module = identificador : "module"
+pr_request = identificador : "request"
+pr_string = identificador : "string"
+pr_switch = identificador : "switch"
+pr_true = identificador : "true"
+pr_until = identificador : "until"
+pr_while = identificador : "while"
+
+// simbolos especiais - V
+"&"
+"|"
+"!"
+"=="
+"!="
+"<"
+">"
+"+"
+"-"
+"*"
+"/"
+","
+";"
+"="
+"("
+")"
+#NonTerminals
+<programa>
+<op_declaracao_de_variavel>
+<declaracao_de_variavel>
+<corpo_dec_variavel>
+<corpo_dec_variavel_1>
+<tipo>
+<lista_ids>
+<lista_ids_1>
+<lista_de_comandos>
+<lista_de_comandos_1>
+<comando>
+<repeticao>
+<atribuicao>
+<entrada_de_dados>
+<saida_de_dados>
+<lista_expressoes>
+<lista_expressoes_1>
+<selecao>
+<op_case>
+<op_case_1>
+<op_repeticao>
+<expressao>
+<expressao_1>
+<elemento>
+<relacional>
+<relacional_1>
+<operador_relacional>
+<aritmetica>
+<aritmetica_1>
+<termo>
+<termo_1>
+<fator>
+#Grammar
+// Programa
+<programa> ::= #101 pr_module <op_declaracao_de_variavel> <lista_de_comandos> pr_end #102 ;
+
+// Declaração de variável
+<op_declaracao_de_variavel> ::= <declaracao_de_variavel> | î ;
+<declaracao_de_variavel> ::= pr_local <corpo_dec_variavel> ;
+<corpo_dec_variavel> ::= <tipo> #103 <lista_ids> #104 ";" <corpo_dec_variavel_1> ;
+<corpo_dec_variavel_1> ::= <corpo_dec_variavel> | î ;
+<tipo> ::= pr_bool | pr_int | pr_float | pr_char | pr_string ;
+<lista_ids> ::= identificador #105 <lista_ids_1> ;
+<lista_ids_1> ::= "," <lista_ids> | î ;
+
+// Lista de comandos
+<lista_de_comandos> ::= <comando> ";" <lista_de_comandos_1> ;
+<lista_de_comandos_1> ::= <lista_de_comandos> | î ;
+<comando> ::= <atribuicao> | <entrada_de_dados> | <saida_de_dados> | <selecao> | <repeticao> ;
+
+// Atribuição
+<atribuicao> ::= identificador #105 "=" <expressao> #106 ;
+
+// Entrada de dados
+<entrada_de_dados> ::= pr_request "(" <lista_ids> #107 ")" ;
+
+// Saída de dados
+<saida_de_dados> ::= pr_echo "(" <lista_expressoes> ")" ;
+<lista_expressoes> ::= <expressao> #108 <lista_expressoes_1> ;
+<lista_expressoes_1> ::= "," <lista_expressoes> | î ;
+
+// Seleção
+<selecao> ::= #109 pr_switch <expressao> <op_case> pr_end #110 ;
+<op_case> ::= pr_case #111 <expressao> #112 <lista_de_comandos> #113 <op_case_1> ;
+<op_case_1> ::= <op_case> | î ;
+
+// Repetição
+<repeticao> ::= pr_do #114 <lista_de_comandos> pr_while <expressao> #115 | pr_do #114 <lista_de_comandos> pr_until <expressao> #116 ;
+
+// Expressões
+<expressao> ::= <elemento> <expressao_1> ;
+<expressao_1> ::= î | "&" <elemento> #117 <expressao_1> | "|" <elemento> #118 <expressao_1> ;
+<elemento> ::= <relacional> | pr_true #119 | pr_false #120 | "!" <elemento> #121 ;
+
+// Relacional
+<relacional> ::= <aritmetica> <relacional_1> ;
+<relacional_1> ::= î | <operador_relacional> #122 <aritmetica> #123 ;
+<operador_relacional> ::= "==" | "!=" | "<" | ">" ;
+
+// Aritmética
+<aritmetica> ::= <termo> <aritmetica_1> ;
+<aritmetica_1> ::= î | "+" <termo> #124 <aritmetica_1> | "-" <termo> #125 <aritmetica_1> ;
+
+// Termo
+<termo> ::= <fator> <termo_1> ;
+<termo_1> ::= î | "*" <fator> #126 <termo_1> | "/" <fator> #127 <termo_1> ;
+
+// Fator
+<fator> ::= identificador #128 |
+            cte_int #129 |
+            cte_float #130 |
+            cte_char #131 |
+            cte_string #132 |
+            "(" <expressao> ")" |
+            "+" <fator> |
+            "-" <fator> #133 ;
+
