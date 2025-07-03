@@ -1,0 +1,109 @@
+IMPLEMENTAÇÃO - analisador sintático
+1) alterar especificação sintática conforme correção do trabalho no.3
+ 
+2) setar opções (em Ferramentas > Opções): 
+   2.1 aba GERAL
+       -> selecionar Analisador Léxico e Sintático, escolher linguagem
+
+  2.2 aba LÉXICO
+      -> Forma de Entrada: String
+      -> Implementação do Autômato: Tabela Compactada 
+
+  2.3 aba SINTÁTICO
+      -> Classe do analisador sintático: LL(1)
+
+3) gerar código (em Ferramentas > Gerar Código): escolher pasta, gerar todos os arquivos
+	
+4) como usar o código gerado, deve ser chamado a partir da ação associada ao botão compilar
+	TROCAR:
+	
+		Lexico lexico = new Lexico();
+		lexico.setInput( /* entrada */ );
+		try
+		{
+			Token t = null;
+			while ( (t = lexico.nextToken()) != null )
+			{
+				System.out.println(t.getLexeme() + t.getId());
+			}
+		}
+		catch ( LexicalError e )
+		{
+			System.out.println(e.getMessage() + " " + e.getPosition());   
+			//message  olhar ScannerConstants.java, String[] SCANNER_ERROR
+			//position precisa ser convertida para linha
+		}
+		
+	
+	POR:
+	
+		Lexico lexico = new Lexico();
+		Sintatico sintatico = new Sintatico();
+		Semantico semantico = new Semantico();
+		lexico.setInput( /* entrada */ );
+		try
+		{
+			sintatico.parse(lexico, semantico);    // tradução dirigida pela sintaxe
+		}
+		// mensagem: programa compilado com sucesso - área reservada para mensagens
+		
+		catch ( SyntaticError e )
+		{
+		       System.out.println(e.getPosition() + " símbolo encontrado: na entrada " + e.getMessage()); 
+			 
+		catch ( LexicalError e )
+		{
+			//Trata erros léxicos, conforme especificação da parte 2 - do compilador
+		}
+			//Trata erros sintáticos
+			//linha 			      sugestão: converter getPosition em linha
+			//símbolo encontrado    sugestão: implementar um método getToken no sintatico
+			//símbolos esperados,   alterar ParserConstants.java, String[] PARSER_ERROR
+                        // consultar os símbolos esperados no GALS (em Documentação > Tabela de Análise Sintática): 		
+		}
+		catch ( SemanticError e )
+		{
+			//Trata erros semânticos
+		}
+
+
+    String[] PARSER_ERROR =
+    {
+        "",
+        "esperado EOF",
+        "esperado palavra reservada",
+        "esperado identificador",
+        "esperado constante_int",
+        "esperado constante_float",
+        "esperado main",
+         ...
+        "esperado ;",
+        "esperado ,",
+	...
+        "esperado main", //"<programa> inválido",
+        "esperado identificador  read  write  writeln  if  repeat", //"<lista_instrucoes> inválido",
+	...
+        "esperado expressao", //"<lista_expressoes> inválido",
+	...
+        "esperado expressao", //"<fator> inválido"
+    };
+
+
+IMPLEMENTAÇÃO - analisador semântico e gerador de código
+
+1) efetue todas as correções relacionadas na avaliação do analisador léxico e do analisador sintático.
+
+2) abra o arquivo que contém as especificações dos tokens e das regras sintáticas da linguagem (gramática usada para a implementação do analisador sintático) e coloque a numeração das ações semânticas na gramática, considerando o esquema de tradução parcial. É necessário verificar a correspondência entre as regras sintáticas desse esquema com as da gramática especificada pela equipe.
+
+3) uma vez que a gramática esteja alterada e as ações semânticas corretamente colocadas, gere novamente os analisadores léxico, sintático e semântico para refletir na implementação as alterações feitas. Observa-se que o único código alterado pelo GALS é o das constantes (em Java - ScannerConstants.java, ParserConstants.java, Constants.java).
+
+4) implemente, a partir da classe analisador semântico (em Java - Semantico.java), os registros semânticos e as ações semânticas que constituem o analisador semântico e o gerador de código, conforme explicado em aula. COMO? as informações estão em vários arquivos, todos disponíveis no AVA.
+
+5) editar e salvar o programa abaixo (teste.txt):
+    main
+         write (3+4);
+   end
+
+6) compilar o programa anterior, devendo resultar no arquivo teste.il. Gere o executável e execute-o para verificar se o código objeto gerado corresponde ao código fonte.
+
+SUGESTÃO - ordem de implementação das ações semânticas: #100, #101, #108, #123, #128    [#129]
