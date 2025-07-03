@@ -406,7 +406,9 @@ public class Main extends JFrame {
 
 				String tokenErro = "";
 				try {
-					Token token = null;
+					Token token;
+
+					sintatico.parse(lexico, semantico);
 
 					while ((token = lexico.nextToken()) != null) {
 						// resultado.append(String.format(
@@ -433,8 +435,7 @@ public class Main extends JFrame {
 					}
 
 					try (FileWriter fileWriter = new FileWriter(fileName)) {
-						// fileWriter.write(semantico.codigo_objeto);
-						fileWriter.write("TESTESTET");
+						fileWriter.write(semantico.codigoCompilado);
 						retornoCodigo.append("Arquivo salvo como " + fileName);
 					} catch (IOException ioException) {
 						retornoCodigo.append("Erro ao salvar o arquivo: " + ioException.getMessage());
