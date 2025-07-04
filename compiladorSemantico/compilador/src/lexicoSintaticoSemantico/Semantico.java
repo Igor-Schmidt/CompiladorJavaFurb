@@ -18,42 +18,109 @@ public class Semantico implements Constants {
 
     public void executeAction(int action, Token token) throws SemanticError {
         System.out.println("Ação #" + action + ", Token: " + token);
+        System.out.println("Token: " + token);
         this.currentToken = token;
 
         switch (action) {
-            case 101: action101(); break;
-            case 102: action102(); break;
-            case 103: action103(); break;
-            case 104: action104(); break;
-            case 105: action105(); break;
-            case 106: action106(); break;
-            case 107: action107(); break;
-            case 108: action108(); break;
-            case 109: action109(); break;
-            case 110: action110(); break;
-            case 111: action111(); break;
-            case 112: action112(); break;
-            case 113: action113(); break;
-            case 114: action114(); break;
-            case 115: action115(); break;
-            case 116: action116(); break;
-            case 117: action117(); break;
-            case 118: action118(); break;
-            case 119: action119(); break;
-            case 120: action120(); break;
-            case 121: action121(); break;
-            case 122: action122(); break;
-            case 123: action123(); break;
-            case 124: action124(); break;
-            case 125: action125(); break;
-            case 126: action126(); break;
-            case 127: action127(); break;
-            case 128: action128(); break;
-            case 129: action129(); break;
-            case 130: action130(); break;
-            case 131: action131(); break;
-            case 132: action132(); break;
-            case 133: action133(); break;
+            case 101:
+                action101();
+                break;
+            case 102:
+                action102();
+                break;
+            case 103:
+                action103();
+                break;
+            case 104:
+                action104();
+                break;
+            case 105:
+                action105();
+                break;
+            case 106:
+                action106();
+                break;
+            case 107:
+                action107();
+                break;
+            case 108:
+                action108(token);
+                break;
+            case 109:
+                action109();
+                break;
+            case 110:
+                action110();
+                break;
+            case 111:
+                action111();
+                break;
+            case 112:
+                action112();
+                break;
+            case 113:
+                action113();
+                break;
+            case 114:
+                action114();
+                break;
+            case 115:
+                action115();
+                break;
+            case 116:
+                action116();
+                break;
+            case 117:
+                action117();
+                break;
+            case 118:
+                action118();
+                break;
+            case 119:
+                action119();
+                break;
+            case 120:
+                action120();
+                break;
+            case 121:
+                action121();
+                break;
+            case 122:
+                action122();
+                break;
+            case 123:
+                action123();
+                break;
+            case 124:
+                action124();
+                break;
+            case 125:
+                action125();
+                break;
+            case 126:
+                action126();
+                break;
+            case 127:
+                action127();
+                break;
+            case 128:
+                action128();
+                break;
+            case 129:
+                action129();
+                break;
+            case 130:
+                action130();
+                break;
+            case 131:
+                action131(token);
+                break;
+            case 132:
+                action132();
+                break;
+            case 133:
+                action133();
+                break;
             default:
                 throw new SemanticError("Ação semântica desconhecida: " + action);
         }
@@ -86,11 +153,21 @@ public class Semantico implements Constants {
 
     public void action103() {
         switch (currentToken.getLexeme()) {
-            case "int": currentType = "int32"; break;
-            case "float": currentType = "float64"; break;
-            case "bool": currentType = "bool"; break;
-            case "char": currentType = "char"; break;
-            case "string": currentType = "string"; break;
+            case "int":
+                currentType = "int32";
+                break;
+            case "float":
+                currentType = "float64";
+                break;
+            case "bool":
+                currentType = "bool";
+                break;
+            case "char":
+                currentType = "char";
+                break;
+            case "string":
+                currentType = "string";
+                break;
         }
     }
 
@@ -151,9 +228,14 @@ public class Semantico implements Constants {
         idList.clear();
     }
 
-    public void action108() throws SemanticError {
-        String type = typeStack.pop();
-        codigoCompilado += String.format("    call void [mscorlib]System.Console::Write(%s)\n", type);
+    public void action108(Token token) throws SemanticError {
+        if (token.getLexeme().equals("\\n")) {
+            System.out.println("Nova linha detectada.");
+            codigoCompilado += String.format("    call void [mscorlib]System.Console::WriteLine(%s)\n", "string");
+        } else {
+            String type = typeStack.pop();
+            codigoCompilado += String.format("    call void [mscorlib]System.Console::Write(%s)\n", type);
+        }
     }
 
     public void action109() {
@@ -237,10 +319,18 @@ public class Semantico implements Constants {
     public void action123() {
         String op = operatorStack.pop();
         switch (op) {
-            case "==": codigoCompilado += "    ceq\n"; break;
-            case "!=": codigoCompilado += "    ceq\n    ldc.i4.0\n    ceq\n"; break;
-            case "<": codigoCompilado += "    clt\n"; break;
-            case ">": codigoCompilado += "    cgt\n"; break;
+            case "==":
+                codigoCompilado += "    ceq\n";
+                break;
+            case "!=":
+                codigoCompilado += "    ceq\n    ldc.i4.0\n    ceq\n";
+                break;
+            case "<":
+                codigoCompilado += "    clt\n";
+                break;
+            case ">":
+                codigoCompilado += "    cgt\n";
+                break;
         }
         typeStack.pop();
         typeStack.pop();
@@ -296,9 +386,14 @@ public class Semantico implements Constants {
         codigoCompilado += String.format("    ldc.r8 %s\n", currentToken.getLexeme());
     }
 
-    public void action131() {
-        typeStack.push("char");
-        codigoCompilado += String.format("    ldc.i4.s %d\n", (int) currentToken.getLexeme().charAt(1));
+    public void action131(Token token) {
+        if (token.getLexeme().equals("\\n")) {
+            typeStack.push("string");
+            codigoCompilado += "    ldstr \"\"\n";
+        } else {
+            typeStack.push("char");
+            codigoCompilado += String.format("    ldc.i4.s %d\n", (int) currentToken.getLexeme().charAt(1));
+        }
     }
 
     public void action132() {

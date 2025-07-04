@@ -252,9 +252,9 @@ public class Main extends JFrame {
 						statusLabel.setText("Arquivo: " + file.getAbsolutePath());
 
 						Main.this.currentFile = file;
-						JOptionPane.showMessageDialog(btnOpen, "Arquivo aberto com sucesso!");
+						JOptionPane.showMessageDialog(null, "Arquivo aberto com sucesso!");
 					} catch (IOException ex) {
-						JOptionPane.showMessageDialog(btnOpen, "Erro ao abrir arquivo", "Erro",
+						JOptionPane.showMessageDialog(null, "Erro ao abrir arquivo", "Erro",
 								JOptionPane.ERROR_MESSAGE);
 					}
 				}
@@ -422,7 +422,8 @@ public class Main extends JFrame {
 					}
 
 					retornoCodigo.setText(resultado.toString());
-					retornoCodigo.append("Programa compilado com sucesso!");
+					// retornoCodigo.append("Programa compilado com sucesso!");
+					JOptionPane.showMessageDialog(null, "Programa compilado com sucesso!");
 
 					String fileName;
 					if (currentFile != null) {
